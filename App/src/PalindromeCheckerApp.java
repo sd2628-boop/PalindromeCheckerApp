@@ -1,6 +1,3 @@
-//version 4.0
-//author akhilmattay
-//use case4: Character Array Based Palindrome Check
 import java.util.Scanner;
 import java.util.Stack;
 
