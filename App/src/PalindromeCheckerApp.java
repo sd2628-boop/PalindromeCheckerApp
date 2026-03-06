@@ -2,40 +2,57 @@
 import java.util.*;
 
 
-class PalindromeChecker {
+interface PalindromeStrategy {
+    boolean check(String input);
+}
 
-    public boolean checkPalindrome(String input) {
+class StackStrategy implements PalindromeStrategy {
+
+    public boolean check(String input) {
         String normalized = input.replaceAll("\\s+", "").toLowerCase();
-        int start = 0;
-        int end = normalized.length() - 1;
+        Stack<Character> stack = new Stack<>();
 
-        while (start < end) {
-            if (normalized.charAt(start) != normalized.charAt(end)) {
+        for (char c : normalized.toCharArray()) {
+            stack.push(c);
+        }
+
+        for (char c : normalized.toCharArray()) {
+            if (c != stack.pop()) {
                 return false;
             }
-            start++;
-            end--;
         }
         return true;
     }
 }
 
-public class PalindromeCheckerApp {
+class DequeStrategy implements PalindromeStrategy {
 
-    public static void main(String[] args) {
-        System.out.println("Welcome to Palindrome Checker App Management System");
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter a string to check palindrome: ");
-        PalindromeChecker checker = new PalindromeChecker();
-        String input = scanner.nextLine();
-        boolean result = checker.checkPalindrome(input);
+    public boolean check(String input) {
+        String normalized = input.replaceAll("\\s+", "").toLowerCase();
+        Deque<Character> deque = new ArrayDeque<>();
 
-        if (result) {
-            System.out.println("Palindrome");
-        } else {
-            System.out.println("Not Palindrome");
+        for (char c : normalized.toCharArray()) {
+            deque.addLast(c);
         }
 
-        scanner.close();
+        while (deque.size() > 1) {
+            if (!deque.removeFirst().equals(deque.removeLast())) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+class PalindromeService {
+
+    private PalindromeStrategy strategy;
+
+    public PalindromeService(PalindromeStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public boolean checkPalindrome(String input) {
+        return strategy.check(input);
     }
 }
